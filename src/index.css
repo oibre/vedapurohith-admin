@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-content  {
+  background-image: url('./assets/bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.btn-scale {
+  transition: 0.5s;
+}
+
+.btn-scale:hover {
+  transform: scale(1.05);
+}
+
+.font-playfair {
+  font-family: 'Playfair Display';
+}
