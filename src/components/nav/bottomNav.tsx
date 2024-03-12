@@ -21,10 +21,10 @@ const BottomNavbar = () => {
         <i className='bx bxs-cart text-lg mb-[-6px]'></i>
         <p className="font-playfair text-xs">Bookings</p>
       </Link>
-      <Link to={'/messages'} className={"flex-1 " + (currentPath === 'messages' ? styles.activeBottomNavItem : styles.bottomNavItem)}>
+      {/* <Link to={'/messages'} className={"flex-1 " + (currentPath === 'messages' ? styles.activeBottomNavItem : styles.bottomNavItem)}>
         <i className='bx bxs-home-alt-2 text-md'></i>
         <p className="font-playfair text-xs">Messages</p>
-      </Link>
+      </Link> */}
     </div>
   )
 }

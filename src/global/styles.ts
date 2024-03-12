@@ -6,7 +6,7 @@ const styles =  {
   navbar: "bg-white shadow-md left-[0vh] right-[0vh] fixed top-[0vh] h-[10vh] flex flex-row px-[20px] lg:top-[-50vh] items-center justify-center",
   bottomNavbar: "bg-white shadow-neg left-[0vh] right-[0vh] fixed bottom-[0vh] h-[12vh] flex flex-row px-[20px] lg:bottom-[-50vh] items-center justify-center gap-[10px]",
   activeBottomNavItem: "bg-black flex flex-col items-center justify-center rounded-lg py-[15px] text-white gap-[10px] cursor-pointer",
-  bottomNavItem: "bg-gray-100 flex flex-col items-center justify-center rounded-lg py-[15px] text-black gap-[10px] cursor-pointer"
+  bottomNavItem: "bg-white flex flex-col items-center justify-center rounded-lg py-[15px] text-black gap-[10px] cursor-pointer"
 }
 
 export default styles

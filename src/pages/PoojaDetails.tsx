@@ -9,7 +9,6 @@ import PoojaCard from '../components/poojaCard';
 import styles from '../global/styles';
 import { useToast, EToastTypes } from '../contexts/ToastContext'
 
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import LoadingCards from '../components/loadingCards';
 
@@ -18,7 +17,13 @@ const PoojaDetails = () => {
   const { id } = useParams();
   const { login, currentUser } = useAuth()
   const { showTypedToast } = useToast()
-  const [pooja, setPooja] = useState(null);
+  const [pooja, setPooja] = useState({
+    name: '',
+    description: '',
+    duration: '',
+    price: '',
+    items: []
+  });
   const [itemDetails, setItemDetails] = useState([]);
   const [loading, setLoading] = useState(true)
   const [apiLoading, setAPILoading] = useState(false)
@@ -32,7 +37,7 @@ const PoojaDetails = () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 3);
 
-  const handleDateChange = (date) => {
+  const handleDateChange = (date: any) => {
     setSelectedDate(date);
   };
 
@@ -43,10 +48,13 @@ const PoojaDetails = () => {
         const poojaDoc = await db.collection('poojas').doc(id).get();
         if (poojaDoc.exists) {
           const poojaData = poojaDoc.data();
-          setPooja({ id: poojaDoc.id, ...poojaData });
+          let data:any = {
+            id: poojaDoc.id, ...poojaData,
+          }
+          setPooja(data);
 
           // Fetch item details using item IDs from the poojaData
-          const itemPromises = poojaData.items.map(async (item) => {
+          const itemPromises = poojaData?.items.map(async (item: any) => {
             const itemDoc = await db.collection('items').doc(item.itemId).get();
             if (itemDoc.exists) {
               return { id: itemDoc.id, ...itemDoc.data() };
@@ -55,10 +63,10 @@ const PoojaDetails = () => {
           });
 
           // Wait for all item promises to resolve and update the state
-          const itemsData = await Promise.all(itemPromises);
+          const itemsData:any = await Promise.all(itemPromises);
           console.log(itemsData)
-          itemsData.forEach((item, index) => {
-            itemsData[index].quantity = poojaData.items[index].quantity
+          itemsData.forEach((item:any, index:any) => {
+            itemsData[index].quantity = poojaData?.items[index].quantity
           })
           setItemDetails(itemsData);
           setLoading(false)
@@ -75,8 +83,8 @@ const PoojaDetails = () => {
   }, [id]);
 
   useEffect(() => {
-    getLatestPoojas(2).then((poojasList) => {
-      setLatestPoojas([...poojasList]);
+    getLatestPoojas(2).then((poojasList:any) => {
+      setLatestPoojas(poojasList);
       setTimeout(() => {
         setLoading(false);
       }, 1500);

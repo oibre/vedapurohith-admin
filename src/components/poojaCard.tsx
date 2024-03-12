@@ -1,7 +1,7 @@
 import {useNavigate} from 'react-router-dom'
 import styles from '../global/styles'
 
-const PoojaCard = ({pooja}) => {
+const PoojaCard = ({pooja}: any) => {
   
   const navigate = useNavigate()
 

@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { auth } from '../firebase'
-import { db } from '../firebase'; // Assuming you have a 'db' instance initialized for Firestore
-
-import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
+import { db, storage, auth, firebaseApp } from '../firebase'; 
+import {getDownloadURL, ref, uploadBytes} from "firebase/storage"
+import { collection, addDoc, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -34,23 +33,39 @@ export function addUserToFirestore(user: any) {
   });
 }
 
+export const getFirestoreDocumentById = async (collectionName: any, documentID: any) => {
+  try {
+    const docRef = doc(db, collectionName, documentID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() };
+    } else {
+      console.log('Document does not exist!');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error getting document:', error);
+    return null;
+  }
+};
+
 export function getUserData(uid: any) {
   return new Promise(async (resolve, reject) => {
-    try {
-      const userDocRef = doc(db, 'users', uid);
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        resolve(userDocSnap.data());
-      } else {
-        console.log('User document does not exist.');
-        resolve(null);
-      }
-    } catch (error) {
-      console.error('Error getting user data from Firestore: ', error);
-      reject(error);
+    const usersCollection = db.collection('users');
+    const query = usersCollection.where('uid', '==', uid);
+
+    const querySnapshot = await query.get();
+    let data = []
+    for(const doc of querySnapshot.docs) {
+      const userData = doc.data();
+      userData.id = doc.id;
+      data.push(userData)
     }
-  });
+    resolve(data);
+  })
 }
+
 
 export function AuthProvider({ children }: IAuthProviderProps): JSX.Element {
   const [currentUser, setCurrentUser] = useState<any>()
@@ -138,6 +153,53 @@ export const getAllPoojas = () => {
   });
 };
 
+export const deleteDocument = async (collectionName: any, documentID: any) => {
+  try {
+    const docRef = doc(db, collectionName, documentID);
+    await deleteDoc(docRef);
+    console.log('Document successfully deleted!');
+    return true; // Indicate successful deletion
+  } catch (error) {
+    console.error('Error deleting document: ', error);
+    return false; // Indicate failed deletion
+  }
+};
+
+export const getAllItems = () => {
+  return new Promise((resolve, reject) => {
+    db.collection('items')
+      .get()
+      .then((querySnapshot) => {
+        const poojaData: any = [];
+        querySnapshot.forEach((doc) => {
+          poojaData.push({ id: doc.id, ...doc.data() });
+        });
+        resolve(poojaData);
+      })
+      .catch((error) => {
+        console.error('Error fetching poojas: ', error);
+        reject(error);
+      });
+  });
+};
+
+export const uploadDataToFirestore = (collectionName: any, payload: any) => {
+  return db.collection(collectionName).add(payload)
+}
+
+export const uploadFileToFirebase = (e: any, location:any) => {
+  return new Promise((resolve, reject) => {
+    let storageInstance = storage(firebaseApp)
+    let poojasImgRef = ref(storageInstance, location + Math.floor(10000 + Math.random() * 90000) + '-' + e.name)
+    uploadBytes(poojasImgRef, e).then(snapshot => {
+      console.log(snapshot)
+      getDownloadURL(snapshot.ref).then(downloadURL => {
+        resolve({url: downloadURL})
+      })
+    }).catch(err => reject({err}))
+  })
+}
+
 export const getLatestPoojas = (n: number) => {
   return new Promise((resolve, reject) => {
     db.collection('poojas')
@@ -212,3 +274,50 @@ export const getAllBookings = () => {
     }
   });
 };
+
+export const getPandints = () => {
+  return new Promise(async (resolve, reject) => {
+    const usersCollection = db.collection('users');
+    const query = usersCollection.where('role', '==', 'pandit');
+
+    const querySnapshot = await query.get();
+    let data = []
+    for(const doc of querySnapshot.docs) {
+      const userData = doc.data();
+      userData.id = doc.id;
+      data.push(userData)
+    }
+    resolve(data);
+  })
+}
+
+export const updateSelectedPandit = (bookingId: any, panditId: any, panditName: any) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const bookingRef = db.collection('bookings').doc(bookingId);
+      await bookingRef.update({ panditId, panditName });
+      resolve('Pandit assigned successfully.');
+    } catch (error) {
+      console.error('Error assigning pandit to booking: ', error);
+      reject(error);
+    }
+  });
+}
+
+export const getUserDataFromFirestore = (uid: any) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const userDocRef = doc(db, 'users', uid);
+      const userDocSnap = await getDoc(userDocRef);
+      if (userDocSnap.exists()) {
+        resolve(userDocSnap.data());
+      } else {
+        console.log('User document does not exist.');
+        resolve(null);
+      }
+    } catch (error) {
+      console.error('Error getting user data from Firestore: ', error);
+      reject(error);
+    }
+  });
+}

@@ -1,4 +1,3 @@
-import Signup from './pages/Signup'
 import { AuthProvider } from './contexts/FirebaseContext'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
@@ -16,6 +15,9 @@ import Success from './pages/Success'
 import ChatComponent from './pages/Messages'
 import ComingSoon from './pages/comingSoon'
 import Booking from './pages/Booking'
+import Create from './pages/poojas/Create'
+import List from './pages/poojas/List'
+import Edit from './pages/poojas/Edit' 
 
 function App() {
   const providers = [ToastProvider, AuthProvider, ApiProvider]
@@ -25,8 +27,10 @@ function App() {
         <Routes>
           <Route element={<PrivateRoutes />}>
             <Route element={<Dashboard />} path="/" />
-            <Route element={<Poojas />} path="/poojas" />
             <Route element={<PoojaDetails />} path="/poojas/:id" />
+            <Route element={<Create />} path='/add-poojas' />
+            <Route element={<List />} path="/poojas" />
+            <Route element={<Edit />} path='/edit-poojas/:id' />
             <Route element={<Booking />} path="/bookings" />
           </Route>
           <Route path="/login" element={<Login />} />

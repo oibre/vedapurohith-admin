@@ -42,15 +42,20 @@ const Booking = () => {
 
   return (
     <div className="container mx-auto mt-10 p-5">
-      <Toolbar showbookBtn={false} headerOverride={false} headerName={'Bookings'} showSearch={true} loading={loading} searchValue={searchValue} onSearch={handleSearch} />
+      {/* <Toolbar showbookBtn={false} headerOverride={false} headerName={'Bookings'} showSearch={true} loading={loading} searchValue={searchValue} onSearch={handleSearch} /> */}
+      <p className="hidden lg:block my-[20px] text-xl font-bold font-playfair">All Bookings</p>
       {pageLoading && <LoadingCards />}
       {!pageLoading && filteredBooking.length === 0 && <p>No bookings found.</p>}
       {!pageLoading && filteredBooking.length > 0 && (
-        <div className="mt-[30px]">
-          {bookings.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
-          ))}
-        </div>
+        <>
+          <div className="mt-[0px] flex flex-row flex-wrap gap-[10px]">
+            {bookings.map((booking: any) => (
+              <div className="w-[45%]">
+                <BookingCard key={booking.id} booking={booking} />
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

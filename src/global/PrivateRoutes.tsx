@@ -16,10 +16,14 @@ export default function PrivateRoutes() {
     setIsSidebarOpen(value);
   };
 
+  const setSidebarStatus = (e:any) => {
+    setIsSidebarOpen(e);
+  }
+
   return currentUser ? (
     <>
       <div className="z-[999] sidebar fixed">
-        <Sidebar isSidebarOpen={isSidebarOpen} />
+        <Sidebar isSidebarOpen={isSidebarOpen} setSidebarStatus={setSidebarStatus} />
         <Navbar setSidebarOpen={setSidebarOpen} />
         <BottomNavbar />
       </div>

@@ -12,8 +12,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getLatestPoojas(3).then((poojasList) => {
-      setPoojas([...poojasList]);
+    getLatestPoojas(3).then((poojasList: any) => {
+      setPoojas(poojasList);
       setTimeout(() => {
         setLoading(false);
       }, 1500);
@@ -35,7 +35,7 @@ export default function Dashboard() {
   return (
     <div className="container mx-auto mt-10 p-5">
       {/* <h1 className="text-lg lg:text-xl font-playfair font-semibold mb-6">Top Poojas</h1> */}
-      <Toolbar showbookBtn={false} headerOverride={false} headerName={'Dashboard'} showSearch={true} loading={loading} searchValue={searchValue} onSearch={handleSearch} />
+      {/* <Toolbar showbookBtn={false} headerOverride={false} headerName={'Dashboard'} showSearch={true} loading={loading} searchValue={searchValue} onSearch={handleSearch} /> */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {!loading && poojas?.map((pooja) => (
           <PoojaCard pooja={pooja} />
